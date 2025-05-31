@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Kuis Cerdas Cermat SMK By Akhmad Azmi</title>
+  <style>
+    body { font-family: sans-serif; background: #f0f0f0; padding: 20px; }
+    .container { max-width: 700px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; }
+    h2, select, button { margin: 10px 0; }
+    .question { font-weight: bold; margin-top: 20px; }
+    .option {
+      display: block;
+      margin-bottom: 10px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    .feedback { margin: 10px 0; font-weight: bold; }
+    .benar { color: green; }
+    .salah { color: red; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Kuis Cerdas Cermat SMK By Akhmad Azmi</h2>
+
+    <div id="setup">
+      <label>Pilih Kelas:</label>
+      <select id="kelas">
+        <option value="10">Kelas 10</option>
+        <option value="11">Kelas 11</option>
+        <option value="12">Kelas 12</option>
+      </select>
+
+      <label>Pilih Level:</label>
+      <select id="level">
+        <option value="1">Level 1</option>
+        <option value="2">Level 2</option>
+        <option value="3">Level 3</option>
+      </select>
+
+      <label>Pilih Kategori:</label>
+      <select id="kategori">
+        <option value="rpl">Rekayasa Perangkat Lunak</option>
+        <option value="tkj">Teknik Komputer & Jaringan</option>
+        <option value="akuntansi">Akuntansi</option>
+        <option value="umum">Pengetahuan Umum</option>
+      </select>
+
+      <button onclick="mulaiKuis()">Mulai Kuis</button>
+    </div>
+
+    <div id="quiz" style="display:none;">
+      <div class="question" id="question"></div>
+      <div id="options"></div>
+      <div id="feedback" class="feedback"></div>
+      <button onclick="jawabDanLanjut()">Jawab & Lanjut</button>
+    </div>
+
+    <div id="result" style="display:none;">
+      <h3>Skor Akhir</h3>
+      <p><span id="scoreBenar"></span> Benar</p>
+      <p><span id="scoreSalah"></span> Salah</p>
+      <p><span id="scoreTotal"></span> dari <span id="scoreJumlah"></span> soal</p>
+      <button onclick="ulang()">Ulangi Kuis</button>
+    </div>
+  </div>
+
+  <script>
+    // Data soal lengkap langsung dalam pemrograman
+    const soal = {
+      10: {
+        1: {
+          rpl: [
+            { question: "Apa singkatan dari HTML?", options: ["HyperText Markup Language", "HighText Machine Language", "Hyperloop Machine Language", "None of the above"], answer: "HyperText Markup Language" },
+            { question: "Bahasa pemrograman untuk web dinamis?", options: ["HTML", "CSS", "JavaScript", "Photoshop"], answer: "JavaScript" },
+            { question: "Apa itu CSS?", options: ["Bahasa pemrograman", "Bahasa styling web", "Database", "Server"], answer: "Bahasa styling web" },
+            { question: "Apa fungsi JavaScript?", options: ["Membuat website statis", "Mempercantik tampilan", "Membuat website dinamis", "Menulis dokumen"], answer: "Membuat website dinamis" },
+            { question: "Tag HTML untuk paragraf?", options: ["<p>", "<div>", "<span>", "<a>"], answer: "<p>" },
+            { question: "Tag HTML untuk gambar?", options: ["<img>", "<image>", "<pic>", "<src>"], answer: "<img>" },
+            { question: "Apa itu Framework?", options: ["Kerangka kerja pemrograman", "Bahasa pemrograman", "Database", "Server"], answer: "Kerangka kerja pemrograman" },
+            { question: "Bahasa backend populer?", options: ["Python", "HTML", "CSS", "Photoshop"], answer: "Python" },
+            { question: "Apa itu API?", options: ["Antarmuka pemrograman aplikasi", "Sistem operasi", "Bahasa pemrograman", "Database"], answer: "Antarmuka pemrograman aplikasi" },
+            { question: "Fungsi CSS?", options: ["Membuat website dinamis", "Memperindah tampilan website", "Menyimpan data", "Menulis kode"], answer: "Memperindah tampilan website" },
+            { question: "Apa itu DOM?", options: ["Dokumen Object Model", "Database Online Model", "Data Object Model", "Digital Object Manager"], answer: "Dokumen Object Model" },
+            { question: "Bahasa pemrograman yang digunakan di browser?", options: ["JavaScript", "Python", "Java", "C++"], answer: "JavaScript" },
+            { question: "Tag untuk link di HTML?", options: ["<a>", "<link>", "<href>", "<url>"], answer: "<a>" },
+            { question: "Apa itu responsive design?", options: ["Desain web yang responsif terhadap ukuran layar", "Desain grafis", "Bahasa pemrograman", "Server"], answer: "Desain web yang responsif terhadap ukuran layar" },
+            { question: "Apa itu Git?", options: ["Sistem kontrol versi", "Bahasa pemrograman", "Database", "Server"], answer: "Sistem kontrol versi" },
+            { question: "Apa itu localhost?", options: ["Komputer lokal", "Server internet", "Bahasa pemrograman", "Database"], answer: "Komputer lokal" },
+            { question: "Bahasa pemrograman yang bersifat scripting?", options: ["JavaScript", "C++", "Java", "Pascal"], answer: "JavaScript" },
+            { question: "Apa itu IDE?", options: ["Integrated Development Environment", "Database", "Server", "Bahasa pemrograman"], answer: "Integrated Development Environment" },
+            { question: "Apa itu debugging?", options: ["Proses mencari kesalahan kode", "Menulis kode baru", "Menghapus data", "Membuat tampilan"], answer: "Proses mencari kesalahan kode" },
+            { question: "Apa itu variable?", options: ["Tempat penyimpanan data", "Fungsi", "Program", "Database"], answer: "Tempat penyimpanan data" },
+          ],
+          tkj: [
+            { question: "Apa fungsi router dalam jaringan?", options: ["Menghubungkan jaringan", "Memutus koneksi", "Menambah bandwidth", "Membuat website"], answer: "Menghubungkan jaringan" },
+            { question: "Apa itu IP Address?", options: ["Alamat perangkat jaringan", "Jenis kabel", "Server", "Bahasa pemrograman"], answer: "Alamat perangkat jaringan" },
+            { question: "Apa itu LAN?", options: ["Jaringan lokal", "Internet", "Server", "Router"], answer: "Jaringan lokal" },
+            { question: "Apa fungsi switch?", options: ["Menghubungkan perangkat dalam jaringan", "Memutus jaringan", "Menyimpan data", "Membuat program"], answer: "Menghubungkan perangkat dalam jaringan" },
+            { question: "Apa itu firewall?", options: ["Keamanan jaringan", "Server", "Bahasa pemrograman", "Database"], answer: "Keamanan jaringan" },
+            { question: "Jenis kabel jaringan?", options: ["UTP", "HDMI", "USB", "VGA"], answer: "UTP" },
+            { question: "Apa itu DNS?", options: ["Penerjemah nama domain", "Server", "Router", "IP Address"], answer: "Penerjemah nama domain" },
+            { question: "Apa itu MAC Address?", options: ["Alamat fisik perangkat", "Alamat IP", "Server", "Bahasa pemrograman"], answer: "Alamat fisik perangkat" },
+            { question: "Apa itu bandwidth?", options: ["Kapasitas data", "Kecepatan processor", "Memori", "Penyimpanan"], answer: "Kapasitas data" },
+            { question: "Apa itu protokol jaringan?", options: ["Aturan komunikasi data", "Jenis kabel", "Server", "Bahasa pemrograman"], answer: "Aturan komunikasi data" },
+            { question: "Apa fungsi modem?", options: ["Menghubungkan ke internet", "Menyimpan data", "Membuat program", "Memutus jaringan"], answer: "Menghubungkan ke internet" },
+            { question: "Apa itu topologi jaringan?", options: ["Bentuk jaringan", "Jenis kabel", "Server", "Bahasa pemrograman"], answer: "Bentuk jaringan" },
+            { question: "Jenis topologi jaringan?", options: ["Star", "Circle", "Square", "Rectangle"], answer: "Star" },
+            { question: "Apa itu Wi-Fi?", options: ["Jaringan nirkabel", "Kabel jaringan", "Server", "Router"], answer: "Jaringan nirkabel" },
+            { question: "Apa itu proxy?", options: ["Perantara jaringan", "Server", "Router", "Bahasa pemrograman"], answer: "Perantara jaringan" },
+            { question: "Apa itu VPN?", options: ["Jaringan pribadi virtual", "Server", "Router", "Bahasa pemrograman"], answer: "Jaringan pribadi virtual" },
+            { question: "Apa itu packet?", options: ["Data yang dikirimkan", "Jenis kabel", "Server", "Bahasa pemrograman"], answer: "Data yang dikirimkan" },
+            { question: "Apa itu subnet mask?", options: ["Pembagi jaringan", "Jenis kabel", "Server", "Bahasa pemrograman"], answer: "Pembagi jaringan" },
+            { question: "Apa fungsi DHCP?", options: ["Memberi IP otomatis", "Menghubungkan jaringan", "Menyimpan data", "Membuat program"], answer: "Memberi IP otomatis" },
+            { question: "Apa itu kabel UTP?", options: ["Kabel jaringan twisted pair", "Kabel listrik", "Kabel HDMI", "Kabel USB"], answer: "Kabel jaringan twisted pair" },
+          ],
+          akuntansi: [
+            { question: "Apa itu aset?", options: ["Harta perusahaan", "Utang perusahaan", "Modal", "Pendapatan"], answer: "Harta perusahaan" },
+            { question: "Perusahaan membeli perlengkapan senilai Rp. 5.000.000,00 Secara Tunai, Jurnal yang benar adalah?", options: ["Debit kas Rp. 5.000.000,00, Kredit Perlengkapan Rp. 5.000.000,00", "Debit Perlengkapan Rp5.000.000,00, Kredit Kas Rp5.000.000,00", "Debit Beban Rp5.000.000,00, Kredit Kas Rp5.000.000,00", "Debit Kas Rp5.000.000,00, Kredit Pendapatan Rp5.000.000,00"], answer: "Debit Perlengkapan Rp5.000.000,00, Kredit Kas Rp5.000.000,00" },
+            { question: "Apa itu modal?", options: ["Modal pemilik", "Utang", "Harta", "Pendapatan"], answer: "Modal pemilik" },
+            { question: "Apa yang termasuk aset lancar?", options: ["Kas", "Tanah", "Peralatan", "Bangunan"], answer: "Kas" },
+            { question: "Apa itu jurnal umum?", options: ["Catatan transaksi", "Laporan keuangan", "Neraca", "Modal"], answer: "Catatan transaksi" },
+            { question: "Apa itu laporan laba rugi?", options: ["Laporan keuntungan dan kerugian", "Neraca", "Jurnal umum", "Modal"], answer: "Laporan keuntungan dan kerugian" },
+            { question: "Apa itu neraca?", options: ["Laporan posisi keuangan", "Laporan laba rugi", "Jurnal umum", "Modal"], answer: "Laporan posisi keuangan" },
+            { question: "Apa itu pendapatan?", options: ["Uang yang diterima", "Utang", "Modal", "Aset"], answer: "Uang yang diterima" },
+            { question: "Apa itu biaya?", options: ["Pengeluaran perusahaan", "Pendapatan", "Modal", "Aset"], answer: "Pengeluaran perusahaan" },
+            { question: "Apa itu piutang?", options: ["Hutang yang harus diterima", "Hutang", "Modal", "Pendapatan"], answer: "Hutang yang harus diterima" },
+            { question: "Apa itu utang?", options: ["Kewajiban perusahaan", "Aset", "Modal", "Pendapatan"], answer: "Kewajiban perusahaan" },
+            { question: "Apa itu buku besar?", options: ["Rekap transaksi", "Jurnal umum", "Neraca", "Modal"], answer: "Rekap transaksi" },
+            { question: "Apa itu kas?", options: ["Uang tunai", "Piutang", "Utang", "Modal"], answer: "Uang tunai" },
+            { question: "Apa itu persediaan?", options: ["Barang dagangan", "Kas", "Utang", "Modal"], answer: "Barang dagangan" },
+            { question: "Apa itu depresiasi?", options: ["Penyusutan aset", "Pendapatan", "Biaya", "Modal"], answer: "Penyusutan aset" },
+            { question: "Apa itu saldo?", options: ["Jumlah uang", "Utang", "Modal", "Pendapatan"], answer: "Jumlah uang" },
+            { question: "Apa itu piutang dagang?", options: ["Hutang pelanggan", "Utang", "Modal", "Pendapatan"], answer: "Hutang pelanggan" },
+            { question: "Apa itu jurnal penyesuaian?", options: ["Penyesuaian transaksi", "Jurnal umum", "Neraca", "Modal"], answer: "Penyesuaian transaksi" },
+            { question: "Apa itu laba bersih?", options: ["Keuntungan setelah biaya", "Pendapatan", "Modal", "Aset"], answer: "Keuntungan setelah biaya" },
+            { question: "Apa itu laporan perubahan modal?", options: ["Laporan perubahan modal", "Neraca", "Jurnal umum", "Pendapatan"], answer: "Laporan perubahan modal" },
+          ],
+          umum: [
+            { question: "Apa ibu kota Indonesia?", options: ["Jakarta", "Bandung", "Surabaya", "Medan"], answer: "Jakarta" },
+            { question: "Pulau terbesar di Indonesia?", options: ["Kalimantan", "Jawa", "Sumatra", "Sulawesi"], answer: "Kalimantan" },
+            { question: "Bahasa resmi Indonesia?", options: ["Bahasa Indonesia", "Bahasa Jawa", "Bahasa Inggris", "Bahasa Sunda"], answer: "Bahasa Indonesia" },
+            { question: "Lambang negara Indonesia?", options: ["Garuda Pancasila", "Singa", "Elang", "Macan"], answer: "Garuda Pancasila" },
+            { question: "Hari kemerdekaan Indonesia?", options: ["17 Agustus 1945", "1 Januari 1945", "17 Agustus 1946", "1 Mei 1945"], answer: "17 Agustus 1945" },
+            { question: "Presiden pertama Indonesia?", options: ["Soekarno", "Soeharto", "Jokowi", "Habibie"], answer: "Soekarno" },
+            { question: "Mata uang Indonesia?", options: ["Rupiah", "Dollar", "Euro", "Yen"], answer: "Rupiah" },
+            { question: "Bendera Indonesia?", options: ["Merah Putih", "Merah Biru", "Hijau Kuning", "Hitam Putih"], answer: "Merah Putih" },
+            { question: "Gunung tertinggi di Indonesia?", options: ["Puncak Jaya", "Semeru", "Rinjani", "Kerinci"], answer: "Puncak Jaya" },
+            { question: "Laut di utara pulau Jawa?", options: ["Laut Jawa", "Laut Arafura", "Laut Banda", "Laut Sulawesi"], answer: "Laut Jawa" },
+            { question: "Hari pahlawan?", options: ["10 November", "17 Agustus", "1 Mei", "28 Oktober"], answer: "10 November" },
+            { question: "Pahlawan nasional?", options: ["Cut Nyak Dien", "R.A. Kartini", "Sukarno", "Habibie"], answer: "Cut Nyak Dien" },
+            { question: "Lagu kebangsaan Indonesia?", options: ["Indonesia Raya", "Tanah Airku", "Garuda Pancasila", "Bagimu Negeri"], answer: "Indonesia Raya" },
+            { question: "Sungai terpanjang di Indonesia?", options: ["Sungai Kapuas", "Sungai Musi", "Sungai Barito", "Sungai Batanghari"], answer: "Sungai Kapuas" },
+            { question: "Hari pendidikan nasional?", options: ["2 Mei", "17 Agustus", "10 November", "28 Oktober"], answer: "2 Mei" },
+            { question: "Bahasa daerah di Sumatera?", options: ["Minang", "Jawa", "Sunda", "Bali"], answer: "Minang" },
+            { question: "Kota industri di Jawa Barat?", options: ["Bekasi", "Bandung", "Bogor", "Depok"], answer: "Bekasi" },
+            { question: "Suku terbesar di Indonesia?", options: ["Jawa", "Batak", "Sunda", "Madura"], answer: "Jawa" },
+            { question: "Laut di sekitar Indonesia?", options: ["Laut Jawa", "Laut Hitam", "Laut Merah", "Laut Baltik"], answer: "Laut Jawa" },
+            { question: "Pulau yang terkenal dengan Komodo?", options: ["Pulau Komodo", "Pulau Bali", "Pulau Lombok", "Pulau Sumatra"], answer: "Pulau Komodo" },
+          ],
+        },
+        // Tambah level 2 dan 3 untuk kelas 10 jika perlu
+      },
+      // Tambah kelas 11 dan 12 jika ingin lengkap
+    };
+
+    let kuisAktif = [];
+    let current = 0;
+    let skor = 0;
+    let salah = 0;
+
+    function mulaiKuis() {
+      const kelas = document.getElementById("kelas").value;
+      const level = document.getElementById("level").value;
+      const kategori = document.getElementById("kategori").value;
+
+      if (soal[kelas] && soal[kelas][level] && soal[kelas][level][kategori]) {
+        kuisAktif = soal[kelas][level][kategori];
+      } else {
+        alert("Soal untuk pilihan tersebut belum tersedia.");
+        return;
+      }
+
+      current = 0;
+      skor = 0;
+      salah = 0;
+
+      document.getElementById("setup").style.display = "none";
+      document.getElementById("result").style.display = "none";
+      document.getElementById("quiz").style.display = "block";
+
+      tampilSoal();
+    }
+
+    function tampilSoal() {
+      const q = kuisAktif[current];
+
+      // Salin dan acak opsi jawaban
+      let opsi = [...q.options];
+      for (let i = opsi.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [opsi[i], opsi[j]] = [opsi[j], opsi[i]];
+      }
+
+      document.getElementById("question").textContent = q.question;
+      document.getElementById("options").innerHTML = opsi.map(opt =>
+        `<div class="option"><label><input type="radio" name="opt" value="${opt}"> ${opt}</label></div>`
+      ).join("");
+      document.getElementById("feedback").textContent = "";
+    }
+
+    function jawabDanLanjut() {
+      const pilihan = document.querySelector('input[name="opt"]:checked');
+      if (!pilihan) {
+        alert("Pilih jawaban terlebih dahulu!");
+        return;
+      }
+
+      const jawabanUser = pilihan.value;
+      const jawabanBenar = kuisAktif[current].answer;
+
+      if (jawabanUser === jawabanBenar) {
+        skor++;
+        document.getElementById("feedback").textContent = "Benar!";
+        document.getElementById("feedback").className = "feedback benar";
+      } else {
+        salah++;
+        document.getElementById("feedback").textContent = `Salah! Jawaban benar: ${jawabanBenar}`;
+        document.getElementById("feedback").className = "feedback salah";
+      }
+
+      // Disable pilihan setelah menjawab
+      const inputs = document.querySelectorAll('input[name="opt"]');
+      inputs.forEach(input => input.disabled = true);
+
+      // Ganti tombol lanjut menjadi tombol soal berikutnya jika masih ada soal
+      const btn = document.querySelector("#quiz button");
+      btn.disabled = true;
+
+      setTimeout(() => {
+        current++;
+        if (current < kuisAktif.length) {
+          tampilSoal();
+          btn.disabled = false;
+        } else {
+          tampilkanHasil();
+        }
+      }, 1500);
+    }
+
+    function tampilkanHasil() {
+      document.getElementById("quiz").style.display = "none";
+      document.getElementById("result").style.display = "block";
+
+      document.getElementById("scoreBenar").textContent = skor;
+      document.getElementById("scoreSalah").textContent = salah;
+      document.getElementById("scoreTotal").textContent = skor + salah;
+      document.getElementById("scoreJumlah").textContent = kuisAktif.length;
+    }
+
+    function ulang() {
+      document.getElementById("result").style.display = "none";
+      document.getElementById("setup").style.display = "block";
+    }
+
+    const btnJawabLanjut = document.getElementById('btnJawabLanjut');
+const jawabanInputs = document.querySelectorAll('input[name="jawaban"]');
+
+// Disable tombol saat soal baru muncul
+function resetTombol() {
+  btnJawabLanjut.disabled = true;
+  btnJawabLanjut.textContent = 'Jawab & Lanjut';
+}
+
+// Event listener untuk enable tombol saat user pilih jawaban
+jawabanInputs.forEach(input => {
+  input.addEventListener('change', () => {
+    btnJawabLanjut.disabled = false;
+  });
+});
+
+// Panggil resetTombol saat menampilkan soal baru
+function tampilkanSoal(soal) {
+  // ... kode tampilkan soal dan jawaban ...
+
+  // Reset pilihan jawaban (uncheck semua)
+  jawabanInputs.forEach(input => {
+    input.checked = false;
+  });
+
+  resetTombol();
+}
+  </script>
+</body>
+</html>
